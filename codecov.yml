@@ -10,4 +10,3 @@ codecov:
   notify:
     after_n_builds: 2
     wait_for_ci: yes
-      token: ${{ secrets.b18688eb-4473-4057-9546-67992d220483 }} # not required for public repos
