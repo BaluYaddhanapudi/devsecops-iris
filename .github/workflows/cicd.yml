@@ -6,7 +6,7 @@ on: push
 jobs:
   # first job to test the application using pytest
   unittest:
-    runs-on: ubuntu-latest, windows-latest # choose the OS for running the action
+    runs-on: ubuntu-latest # choose the OS for running the action
     # define the individual sequential steps to be run
     steps:
       - name: Checkout the repository
@@ -23,10 +23,11 @@ jobs:
           pytest
 
   codecoverage:
-    runs-on: ubuntu-latest, windows-latest # choose the OS for running the action
+    runs-on: ${{ matrix.os }} # Given the OS for running the action
     strategy:
       matrix: 
         python: ['3.7', '3.8', '3.9']
+        os: [ubuntu-latest, windows-latest]
     env:
       PYTHON: ${{ matrix.python }}
     # define the individual sequential steps to be run
@@ -45,17 +46,12 @@ jobs:
           pip install pytest-cov
           pytest --cov=./
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v1
         with:
-           token: ${{ secrets.b18688eb-4473-4057-9546-67992d220483 }} # not required for public repos
-           files: ./coverage1.xml,./coverage2.xml # optional
-           flags: unittests # optional
-           name: codecov-umbrella # optional
-           fail_ci_if_error: true # optional (default = false)
-           verbose: true # optional (default = false)
+          fail_ci_if_error: true
 
   container-security:
-    runs-on: ubuntu-latest, windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
@@ -81,7 +77,7 @@ jobs:
           path: ./results.sarif
   
   upload_zip:
-    runs-on: ubuntu-latest, windows-latest # choose the OS for running the action
+    runs-on: ubuntu-latest # choose the OS for running the action
     needs: 
       - unittest
       - codecoverage
